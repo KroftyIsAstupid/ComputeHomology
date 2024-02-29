@@ -94,6 +94,9 @@ def main():
     res=fina  
     for i in range(len(fina)-1):
         res[i+1][0]=res[i+1][0]-res[i][1]
+        res[i+1][2]=res[i][2]
+    for i in range(len(fina)): 
+        del res[i][1]
     print(res)
 
 if __name__ == '__main__':
