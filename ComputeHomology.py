@@ -43,9 +43,28 @@ def BoundMatrix(group1,group2):
                     #print(result[i,k])
     return result
 
+def BTnum(M):
+    count=0
+    zero=0
+    j=0
+    tor=[]
+    cy=0
+    for i in range(shape(M)[0]):
+        if M[i,i]!=0:
+            count=count+1
+            if abs(M[i,i])==1:
+                zero=zero+1
+            else:
+                j=j+1
+                tor.insert(abs(M[i,i]))
+        else: 
+            break 
+    return [shape(M)[0]-count, zero , tor]
+
 from InvNum import InvNum
 
 def main():
+    dim=2
     g2=['abf','adf','cdf','cbf','abe','ade','cbe','cde']
     g1=['ab','ad','af','ae','cb','cd','cf','ce','bf','be','df','de']
     g0=['a','b','c','d','e','f']
@@ -64,13 +83,18 @@ def main():
         for j in range(len(G[i])):
             print(G[i][j].sign, G[i][j].st)
     """
+    fina=[]
+    for i in range(dim): 
+        m=BoundMatrix(G[dim-i],G[dim-i-1])
+        ans=BTnum(smith_normal_form(m))
+        fina.insert(i+1,ans)
     
-    m1=BoundMatrix(G[2],G[1])
-    m2=BoundMatrix(G[1],G[0])
-    #print(m)
-    print(smith_normal_form(m1))
-    print(smith_normal_form(m2))
+    fina.insert(dim,[len(g0),0,[]])
     
-    
+    res=fina  
+    for i in range(len(fina)-1):
+        res[i+1][0]=res[i+1][0]-res[i][1]
+    print(res)
+
 if __name__ == '__main__':
     main()
