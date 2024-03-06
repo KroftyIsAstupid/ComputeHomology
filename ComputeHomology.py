@@ -180,8 +180,8 @@ def main():
     C=['abf','adf','cdf','cbf','abe','ade','cbe','cde']
     #C=['abd','ebd','bce','fce','caf','gaf','deg','heg','efh','ifh','fgi','dgi','gha','bha','hib','cib','idc','adc']
     res=CompHcoH(C)
-    print(res[0]) 
-    print(res[1])
+    print(res[0]) #输出同调，维数从大到小
+    print(res[1]) #输出上同调，维数从大到小
     
 if __name__ == '__main__':
     main()
