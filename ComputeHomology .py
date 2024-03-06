@@ -35,6 +35,7 @@ def ComputeBound(ele):
             w=2
         else:
             w=1
+        
         del s[i]
         temp=elem(sign*w,s)
         result.insert(i+1,temp) 
@@ -52,24 +53,6 @@ def BoundMatrix(group1,group2):
                     result[i,k]=bound[j].sign * group2[k].sign
                     #print(result[i,k])
     return result
-
-def BTnum(M):
-    count=0
-    zero=0
-    j=0
-    tor=[]
-    cy=0
-    for i in range(shape(M)[0]):
-        if M[i,i]!=0:
-            count=count+1
-            if abs(M[i,i])==1:
-                zero=zero+1
-            else:
-                j=j+1
-                tor.insert(j,abs(M[i,i]))
-        else: 
-            break 
-    return [shape(M)[0]-count, zero , tor]
 
 from InvNum import InvNum
 
@@ -109,7 +92,8 @@ def genera(cn):
                 po=po+1
     return line 
 
-def inpo(C,dim):
+def inpo(C):
+    dim=len(C[0])-1
     cn=[] #输入C
     for i in range(len(C)):
         cn.insert(i+1,list(C[i]))
@@ -120,19 +104,18 @@ def inpo(C,dim):
     G.reverse()
     return G
 
-
-def main():
-    dim=2
-    C=['abf','adf','cdf','cbf','abe','ade','cbe','cde']
-    mg=inpo(C,dim)
+def Infm(mg):
     g=[]
     for i in range(len(mg)):
         temp1=[]
         for j in range(len(mg[i])):
             temp1.insert(j+1, list(mg[i][j]))
         g.insert(i+1,temp1)
+    return g
 
+def outPutSmith(g): #反序输出边缘同态的smith矩阵
     G=[]
+    dim=len(g[-1][0])-1
     for i in range(len(g)):
         temp=[]
         for j in range(len(g[i])): 
@@ -140,27 +123,69 @@ def main():
             temp.insert(j+1, elem(a[1],a[0]))
             #print(temp[0].st)
         G=G+[temp]
-
     fina=[]
+    dim=len(G)-1
     for i in range(dim): 
         m=BoundMatrix(G[dim-i],G[dim-i-1])
-        ans=BTnum(smith_normal_form(transpose(m)))
+        ans=smith_normal_form(m)
         fina.insert(i+1,ans)
-    
-    #fina.insert(dim,[len(g0),0,[]])
-    fina.reverse()
-    fina.insert(dim,[len(C),0,[]])
-    
-    #print(fina)
-    
-    res=fina  
-    for i in range(len(fina)-1):
+    return fina
+
+def outPutNum(G):
+    fina=[]
+    dim=len(G)
+    for i in range(dim): 
+        ans=BTnum(G[i])
+        fina.insert(i+1,ans)
+    return fina
+
+def BTnum(M):
+    count=0
+    zero=0
+    j=0
+    tor=[]
+    cy=0
+    for i in range(shape(M)[0]):
+        if M[i,i]!=0:
+            count=count+1
+            if abs(M[i,i])==1:
+                zero=zero+1
+            else:
+                j=j+1
+                tor.insert(j,abs(M[i,i]))
+        else: 
+            break 
+    return [shape(M)[0]-count, zero , tor]
+
+def Hom(G,p):
+    res=outPutNum(G)
+    res.insert(len(res),[p,0,[]])
+    for i in range(len(res)-1):
         res[i+1][0]=res[i+1][0]-res[i][1]
         res[-1-i][2]=res[-2-i][2]
-    for i in range(len(fina)): 
+    for i in range(len(res)): 
         del res[i][1]
     res[0][1]=[]
-    print(res)
+    return res
+
+def CoHom(G,n):
+    for i in range(len(G)):
+        temp=transpose(G[i])
+        G[i]=temp
+    G.reverse()
+    res=Hom(G,n)
+    res.reverse()
+    return res
+
+def CompHcoH(C):
+    g=Infm(inpo(C))
+    G=outPutSmith(g)
+    return [Hom(G,len(g[0])),CoHom(G,len(C))]
+    
+def main():
+    C=['abf','adf','cdf','cbf','abe','ade','cbe','cde']
+    res=CompHcoH(C)
+    print(res[1])
     
 if __name__ == '__main__':
     main()
