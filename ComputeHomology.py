@@ -15,6 +15,7 @@ class chain_group(object):
         self.dim=dim  #同调群维数
 """
 import copy
+from InvNum import InvNum
 from sympy import *
 from sympy.matrices.normalforms import hermite_normal_form
 from sympy.matrices.normalforms import smith_normal_form
@@ -32,7 +33,7 @@ def ComputeBound(ele):
             w=1
         """
         if len(s)==2 and (s[0]=='e' or s[1]=='e' or s[0]=='f' or s[1]=='f') and s[i]!='e' and s[i]!='f':
-            w=2
+            w=1
         else:
             w=1
         
@@ -53,8 +54,6 @@ def BoundMatrix(group1,group2):
                     result[i,k]=bound[j].sign * group2[k].sign
                     #print(result[i,k])
     return result
-
-from InvNum import InvNum
 
 def singlecomp(A,B): #一个无序列表和另外一个列表判断是否相等
     a=copy.deepcopy(A)
@@ -144,8 +143,7 @@ def BTnum(M):
     zero=0
     j=0
     tor=[]
-    cy=0
-    for i in range(shape(M)[0]):
+    for i in range(min(shape(M)[0],shape(M)[1])):
         if M[i,i]!=0:
             count=count+1
             if abs(M[i,i])==1:
@@ -160,6 +158,7 @@ def BTnum(M):
 def Hom(G,p):
     res=outPutNum(G)
     res.insert(len(res),[p,0,[]])
+    #print(res)
     for i in range(len(res)-1):
         res[i+1][0]=res[i+1][0]-res[i][1]
         res[-1-i][2]=res[-2-i][2]
@@ -173,6 +172,7 @@ def CoHom(G,n):
         temp=transpose(G[i])
         G[i]=temp
     G.reverse()
+    #print(G)
     res=Hom(G,n)
     res.reverse()
     return res
@@ -180,12 +180,14 @@ def CoHom(G,n):
 def CompHcoH(C):
     g=Infm(inpo(C))
     G=outPutSmith(g)
-    return [Hom(G,len(g[0])),CoHom(G,len(C))]
+    return [Hom(G,len(g[0])), CoHom(G,len(C))]
     
 def main():
     C=['abf','adf','cdf','cbf','abe','ade','cbe','cde']
     res=CompHcoH(C)
+    print(res[0]) 
     print(res[1])
     
 if __name__ == '__main__':
     main()
+    
