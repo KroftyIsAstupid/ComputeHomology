@@ -17,17 +17,17 @@ def ComputeBound(ele):
     for i in range(0,len(ele.st)):
         s=copy.deepcopy(ele.st)
         sign= ele.sign*((-1)**i)
-        """
+        
         if s[i]=='e' or s[i]=='f':
             w=2
         else:
             w=1
         """
         if len(s)==2 and (s[0]=='e' or s[1]=='e' or s[0]=='f' or s[1]=='f') and s[i]!='e' and s[i]!='f':
-            w=1
+            w=2
         else:
             w=1
-        
+        """
         del s[i]
         temp=elem(sign*w,s)
         result.insert(i+1,temp) 
@@ -149,12 +149,15 @@ def BTnum(M):
 def Hom(G,p):
     res=outPutNum(G)
     res.insert(len(res),[p,0,[]])
+    #print(res)
     for i in range(len(res)-1):
         res[i+1][0]=res[i+1][0]-res[i][1]
         res[-1-i][2]=res[-2-i][2]
     for i in range(len(res)): 
         del res[i][1]
     res[0][1]=[]
+    for i in range(len(res)):
+        res[i][0]=res[i][0]-len(res[i][1])
     return res
 
 def CoHom(G,n):
@@ -174,8 +177,8 @@ def CompHcoH(C):
     return [Hom(G,len(g[0])), CoHom(G,len(C))]
     
 def main():
-    #C=['abf','adf','cdf','cbf','abe','ade','cbe','cde']
-    C=['abd','ebd','bce','fce','caf','daf','deg','heg','efh','ifh','fdi','gdi','gha','bha','hib','cib','igc','agc']
+    C=['abf','adf','cdf','cbf','abe','ade','cbe','cde']
+    #C=['abd','ebd','bce','fce','caf','gaf','deg','heg','efh','ifh','fgi','dgi','gha','bha','hib','cib','idc','adc']
     res=CompHcoH(C)
     print(res[0]) 
     print(res[1])
