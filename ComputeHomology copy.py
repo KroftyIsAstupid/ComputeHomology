@@ -1,7 +1,7 @@
 """
 目的是编写一个程序, 手动属于一个抽象链群, 并定义链映射, 可以计算出链群所对应的上同调群
 """
-#定义群元素, 由两部分构成, sign表示符号, 取值为±1, st是元素, 用list模式写出
+#定义群元素, 由两部分构成, sign表示符号, 取值为±1, st是元素, 用字符串形式写出
 class elem(object):
     def __init__(self,sign,st):
         self.sign=sign 
@@ -14,7 +14,7 @@ class chain_group(object):
         self.e=e      #用list的形式记录链群, list中的元素都是elem
         self.dim=dim  #同调群维数
 """
-import copy
+
 from sympy import *
 from sympy.matrices.normalforms import hermite_normal_form
 from sympy.matrices.normalforms import smith_normal_form
@@ -23,20 +23,9 @@ from sympy.matrices.normalforms import smith_normal_form
 def ComputeBound(ele):
     result=[]
     for i in range(0,len(ele.st)):
-        s=copy.deepcopy(ele.st)
-        sign= ele.sign*((-1)**i)
-        """
-        if s[i]=='e' or s[i]=='f':
-            w=2
-        else:
-            w=1
-        """
-        if len(s)==2 and (s[0]=='e' or s[1]=='e' or s[0]=='f' or s[1]=='f') and s[i]!='e' and s[i]!='f':
-            w=2
-        else:
-            w=1
-        del s[i]
-        temp=elem(sign*w,s)
+        tt=ele.st
+        del tt[i]
+        temp=elem(ele.sign*((-1)**i),tt)
         result.insert(i+1,temp) 
     return result
 
@@ -66,72 +55,19 @@ def BTnum(M):
                 zero=zero+1
             else:
                 j=j+1
-                tor.insert(j,abs(M[i,i]))
+                tor.insert(abs(M[i,i]))
         else: 
             break 
     return [shape(M)[0]-count, zero , tor]
 
 from InvNum import InvNum
 
-def singlecomp(A,B): #一个无序列表和另外一个列表判断是否相等
-    a=copy.deepcopy(A)
-    b=copy.deepcopy(B)
-    if len(a)==len(b):
-        while len(a)>0:
-            sin=0
-            for i in range(0,len(b)):
-                if a[0]==b[i]:
-                    sin=1
-                    del a[0]
-                    del b[i]
-                    break
-            if sin==0:
-                return False 
-        return True
-    else:
-        return False
-    
-def comp(A,B):
-    res=False
-    for i in range(len(B)):
-        res= res or singlecomp(A,B[i])
-    return res 
-                
-def genera(cn):
-    line=[]
-    po=0
-    for i in range(len(cn)): 
-        for j in range(len(cn[i])):
-            temp=copy.deepcopy(cn[i]) 
-            del temp[j]
-            if comp(temp,line)==False:
-                line.insert(po,temp)
-                po=po+1
-    return line 
-
-def inpo(C,dim):
-    cn=[] #输入C
-    for i in range(len(C)):
-        cn.insert(i+1,list(C[i]))
-    G=[]
-    G.insert(0,cn)
-    for i in range(1,dim+1):
-        G.insert(i,genera(G[i-1]))
-    G.reverse()
-    return G
-
-
 def main():
     dim=2
-    C=['abf','adf','cdf','cbf','abe','ade','cbe','cde']
-    mg=inpo(C,dim)
-    g=[]
-    for i in range(len(mg)):
-        temp1=[]
-        for j in range(len(mg[i])):
-            temp1.insert(j+1, list(mg[i][j]))
-        g.insert(i+1,temp1)
-
+    g2=['abf','adf','cdf','cbf','abe','ade','cbe','cde']
+    g1=['ab','ad','af','ae','cb','cd','cf','ce','bf','be','df','de']
+    g0=['a','b','c','d','e','f']
+    g=[g0,g1,g2]
     G=[]
     for i in range(len(g)):
         temp=[]
@@ -141,26 +77,31 @@ def main():
             #print(temp[0].st)
         G=G+[temp]
 
+    """
+    for i in range(len(G)):
+        for j in range(len(G[i])):
+            print(G[i][j].sign, G[i][j].st)
+    """
     fina=[]
     for i in range(dim): 
         m=BoundMatrix(G[dim-i],G[dim-i-1])
-        ans=BTnum(smith_normal_form(transpose(m)))
+        ans=BTnum(smith_normal_form(m))
         fina.insert(i+1,ans)
     
-    #fina.insert(dim,[len(g0),0,[]])
-    fina.reverse()
-    fina.insert(dim,[len(C),0,[]])
-    
-    #print(fina)
+    fina.insert(dim,[len(g0),0,[]])
     
     res=fina  
     for i in range(len(fina)-1):
         res[i+1][0]=res[i+1][0]-res[i][1]
-        res[-1-i][2]=res[-2-i][2]
+        res[i+1][2]=res[i][2]
     for i in range(len(fina)): 
         del res[i][1]
-    res[0][1]=[]
     print(res)
-    
+
+import time 
 if __name__ == '__main__':
+    #star=time.time()
     main()
+    #end=time.time()
+    #t=end-star 
+    #print(t)
