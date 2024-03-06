@@ -149,7 +149,6 @@ def BTnum(M):
 def Hom(G,p):
     res=outPutNum(G)
     res.insert(len(res),[p,0,[]])
-    print(res)
     for i in range(len(res)-1):
         res[i+1][0]=res[i+1][0]-res[i][1]
         res[-1-i][2]=res[-2-i][2]
