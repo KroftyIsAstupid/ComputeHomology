@@ -1,25 +1,16 @@
 """
 目的是编写一个程序, 手动属于一个抽象链群, 并定义链映射, 可以计算出链群所对应的上同调群
 """
-#定义群元素, 由两部分构成, sign表示符号, 取值为±1, st是元素, 用list模式写出
-class elem(object):
-    def __init__(self,sign,st):
-        self.sign=sign 
-        self.st=st
-
-#定义链群
-"""
-class chain_group(object):
-    def __init__(self,dim,e):
-        self.e=e      #用list的形式记录链群, list中的元素都是elem
-        self.dim=dim  #同调群维数
-"""
 import copy
 from InvNum import InvNum
 from sympy import *
 from sympy.matrices.normalforms import hermite_normal_form
 from sympy.matrices.normalforms import smith_normal_form
-
+#定义群元素, 由两部分构成, sign表示符号, 取值为±1, st是元素, 用list模式写出
+class elem(object):
+    def __init__(self,sign,st):
+        self.sign=sign 
+        self.st=st
 #定义边缘映射, 对于特定元素计算其边缘, 输出结果为一个list
 def ComputeBound(ele):
     result=[]
@@ -95,7 +86,7 @@ def inpo(C):
     dim=len(C[0])-1
     cn=[] #输入C
     for i in range(len(C)):
-        cn.insert(i+1,list(C[i]))
+        cn.insert(i,list(C[i]))
     G=[]
     G.insert(0,cn)
     for i in range(1,dim+1):
@@ -158,7 +149,7 @@ def BTnum(M):
 def Hom(G,p):
     res=outPutNum(G)
     res.insert(len(res),[p,0,[]])
-    #print(res)
+    print(res)
     for i in range(len(res)-1):
         res[i+1][0]=res[i+1][0]-res[i][1]
         res[-1-i][2]=res[-2-i][2]
@@ -180,10 +171,12 @@ def CoHom(G,n):
 def CompHcoH(C):
     g=Infm(inpo(C))
     G=outPutSmith(g)
+    #print(shape(G[0])[1])
     return [Hom(G,len(g[0])), CoHom(G,len(C))]
     
 def main():
-    C=['abf','adf','cdf','cbf','abe','ade','cbe','cde']
+    #C=['abf','adf','cdf','cbf','abe','ade','cbe','cde']
+    C=['abd','ebd','bce','fce','caf','daf','deg','heg','efh','ifh','fdi','gdi','gha','bha','hib','cib','igc','agc']
     res=CompHcoH(C)
     print(res[0]) 
     print(res[1])
