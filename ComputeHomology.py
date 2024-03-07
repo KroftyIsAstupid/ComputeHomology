@@ -17,12 +17,13 @@ def ComputeBound(ele):
     for i in range(0,len(ele.st)):
         s=copy.deepcopy(ele.st)
         sign= ele.sign*((-1)**i)
-        
+        w=1
+        """
         if s[i]=='e' or s[i]=='f':
             w=2
         else:
             w=1
-        """
+    
         if len(s)==2 and (s[0]=='e' or s[1]=='e' or s[0]=='f' or s[1]=='f') and s[i]!='e' and s[i]!='f':
             w=2
         else:
@@ -177,8 +178,8 @@ def CompHcoH(C):
     return [Hom(G,len(g[0])), CoHom(G,len(C))]
     
 def main():
-    C=['abf','adf','cdf','cbf','abe','ade','cbe','cde']
-    #C=['abd','ebd','bce','fce','caf','gaf','deg','heg','efh','ifh','fgi','dgi','gha','bha','hib','cib','idc','adc']
+    #C=['abf','adf','cdf','cbf','abe','ade','cbe','cde']
+    C=['abd','ebd','bce','fce','caf','gaf','deg','heg','efh','ifh','fgi','dgi','gha','bha','hib','cib','idc','adc']
     res=CompHcoH(C)
     print(res[0]) #输出同调，维数从大到小
     print(res[1]) #输出上同调，维数从大到小
